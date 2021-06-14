@@ -96,4 +96,55 @@ window.addEventListener('DOMContentLoaded', function () {
 
     setClock('.timer', deadLine);//передаю агруметы для конечной функции
 
+
+    //modal
+
+    const btnModal = document.querySelectorAll('[data-modal]'),
+        modal = document.querySelector('.modal'),
+        modalClouseBtn = document.querySelector('[data-close]');
+
+
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';//чтоб убрать прокрутку при открытии окна
+        clearInterval(modalTimerId);//если пользыватель открывал окно, чтоб оно снова не открываось по таймеру
+    }
+
+    btnModal.forEach(btn => {
+        btn.addEventListener('click', openModal);
+    });
+
+
+    function closeModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+    }
+
+    modalClouseBtn.addEventListener('click', closeModal); //закрытие модального окна
+
+    modal.addEventListener('click', (e) => {// закрытие модального окна в пустом месте
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape' && modal.classList.contains('show')) {//закрытие при помощи кнопки ESC
+            closeModal();
+
+        }
+    });
+
+    const modalTimerId = setTimeout(openModal, 5000);
+
+    function showModalByScroll() {
+        if (window.pageXOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll);
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
 });
